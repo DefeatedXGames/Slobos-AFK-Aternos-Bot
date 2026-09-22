@@ -1368,13 +1368,15 @@ function createBot() {
 }
 
 function scheduleReconnect() {
-  clearBotTimeouts();
-
   // FIX: don't stack reconnect if already waiting
+  // (check BEFORE clearing timeouts — clearing first killed the pending
+  // reconnect timer and left isReconnecting stuck true forever)
   if (isReconnecting) {
     addLog("[Bot] Reconnect already scheduled, skipping duplicate.");
     return;
   }
+
+  clearBotTimeouts();
 
   isReconnecting = true;
   botState.reconnectAttempts++;
